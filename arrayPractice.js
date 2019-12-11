@@ -2,10 +2,18 @@ const MEMORY = require("./memory");
 let memory = new MEMORY();
 
 class customArray {
-  constructor(memAllo = 10) {
+  constructor(memAllo = 10, size_ratio = 2) {
     this.length = 0;
     this.size = memAllo;
+    this.size_ratio = size_ratio;
     this.ptr = memory.allocate(memAllo);
+  }
+
+  setSizeRatio(size) {
+    if (size < 0 || size > 999999999999999999999999999999999999) {
+      throw new Error("Nope");
+    }
+    this.size_ratio = size;
   }
 
   checkIndex(indx) {
@@ -13,16 +21,13 @@ class customArray {
       throw new Error("Index out of bounds.");
     }
   }
-  prototype.toString = function() {
-    console.log("hello");
-  };
 
   checkMem() {
     if (this.length + 1 > this.size) {
-      let newPtr = memory.allocate(this.size * 2);
+      let newPtr = memory.allocate(this.size * this.size_ratio);
       memory.copy(newPtr, this.ptr, this.size);
 
-      this.size * 2;
+      this.size = this.length * this.size_ratio;
       this.ptr = newPtr;
     }
   }
@@ -59,8 +64,7 @@ class customArray {
     this.length++;
     memory.set(this.ptr + index, value);
   }
-  // | c|x|1 |2 |3 |4 | 5|
-  // |c |1 |2 |3 |4 | 5| 5|
+
   remove(index) {
     this.checkIndex();
 
